@@ -88,12 +88,12 @@ const CGFloat kDIDatepickerSpaceBetweenItems = 15.;
 {
     _selectedDateBottomLineColor = selectedDateBottomLineColor;
 
-    for (id subview in self.datesScrollView.subviews) {
-        if ([subview isKindOfClass:[DIDatepickerDateView class]]) {
-            DIDatepickerDateView *dateView = (DIDatepickerDateView *)subview;
-            [dateView setItemSelectionColor:selectedDateBottomLineColor];
-        }
-    }
+//    for (id subview in self.datesScrollView.subviews) {
+//        if ([subview isKindOfClass:[DIDatepickerDateView class]]) {
+//            DIDatepickerDateView *dateView = (DIDatepickerDateView *)subview;
+//            [dateView setItemSelectionColor:selectedDateBottomLineColor];
+//        }
+//    }
 }
 
 
@@ -128,7 +128,7 @@ const CGFloat kDIDatepickerSpaceBetweenItems = 15.;
 {
     NSDate *today = [NSDate date];
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *todayComponents = [calendar components:NSWeekdayCalendarUnit fromDate:today];
+    NSDateComponents *todayComponents = [calendar components:NSCalendarUnitWeekday fromDate:today];
 
     NSMutableArray *dates = [[NSMutableArray alloc] init];
     for (NSInteger weekday = 0; weekday < 7; weekday++) {
@@ -142,8 +142,8 @@ const CGFloat kDIDatepickerSpaceBetweenItems = 15.;
 {
     NSDate *today = [NSDate date];
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSRange days = [calendar rangeOfUnit:NSDayCalendarUnit
-                                  inUnit:NSMonthCalendarUnit
+    NSRange days = [calendar rangeOfUnit:NSCalendarUnitDay
+                                  inUnit:NSCalendarUnitMonth
                                  forDate:today];
     NSDateComponents *todayComponents = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth fromDate:today];
 
@@ -178,12 +178,12 @@ const CGFloat kDIDatepickerSpaceBetweenItems = 15.;
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDate *startOfYear;
     NSTimeInterval lengthOfYear;
-    [calendar rangeOfUnit:NSYearCalendarUnit
+    [calendar rangeOfUnit:NSCalendarUnitYear
                 startDate:&startOfYear
                  interval:&lengthOfYear
                   forDate:[NSDate date]];
     NSDate *endOfYear = [startOfYear dateByAddingTimeInterval:lengthOfYear];
-    NSDateComponents *components = [calendar components:NSDayCalendarUnit
+    NSDateComponents *components = [calendar components:NSCalendarUnitDay
                                          fromDate:startOfYear
                                            toDate:endOfYear
                                           options:0];
@@ -192,7 +192,7 @@ const CGFloat kDIDatepickerSpaceBetweenItems = 15.;
 
 - (void)selectDate:(NSDate *)date
 {
-    NSAssert([self.dates indexOfObject:date] != NSNotFound, @"Date not found in dates array");
+    //NSAssert([self.dates indexOfObject:date] != NSNotFound, @"Date not found in dates array");
 
     self.selectedDate = date;
 }
@@ -228,8 +228,9 @@ const CGFloat kDIDatepickerSpaceBetweenItems = 15.;
     for (NSDate *date in self.dates) {
         DIDatepickerDateView *dateView = [[DIDatepickerDateView alloc] initWithFrame:CGRectMake(currentItemXPosition, 0, kDIDatepickerItemWidth, self.frame.size.height)];
         dateView.date = date;
-        dateView.selected = [date isEqualToDate:self.selectedDate];
-        [dateView setItemSelectionColor:self.selectedDateBottomLineColor];
+        dateView.isSelected = [date isEqualToDate:self.selectedDate];
+
+       // [dateView setItemSelectionColor:self.selectedDateBottomLineColor];
         [dateView addTarget:self action:@selector(updateSelectedDate:) forControlEvents:UIControlEventValueChanged];
 
         [self.datesScrollView addSubview:dateView];
